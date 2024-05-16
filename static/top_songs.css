@@ -19,6 +19,48 @@ h1 {
     gap: 20px;
 }
 
+.song-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 250px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+    cursor: pointer;
+    border: none;
+    text-align: center;
+}
+
+.song-card:hover {
+    transform: scale(1.05);
+}
+
+.song-card h2 {
+    margin: 0;
+    text-align: center;
+    font-size: 1.5em;
+}
+
+.song-card p {
+    margin: 5px 0;
+    text-align: center;
+}
+
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
 .track {
     display: flex;
     flex-direction: column;
@@ -51,19 +93,6 @@ audio {
     width: 100%;
 }
 
-/* Animation styles */
-@keyframes gradientAnimation {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
-}
-
 body {
     font-family: Arial, sans-serif;
     background: linear-gradient(120deg, #cce0cd, #78b178);
@@ -91,7 +120,7 @@ body {
 .song-card {
     background-color: #ffffff;
     border-radius: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px #044103;
     padding: 20px;
     width: 250px;
     text-align: center;
@@ -107,7 +136,3 @@ body {
     color: #044103; 
 }
 
-audio {
-    margin-top: 10px;
-    width: 100%;
-}

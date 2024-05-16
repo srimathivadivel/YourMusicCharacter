@@ -2,30 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Top 5 Songs</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='top_songs.css') }}">
 </head>
 <body>
     <h1>Your Top 5 Songs</h1>
-    
-    <div class="songs-container">
-        {% for track in tracks %}
-        <div class="song-card">
-            <h2>{{ track.name }}</h2>
-            <p>Artist: {{ track.artist }}</p>
-            <p>Album: {{ track.album }}</p>
-            <p>Release Date: {{ track.release_date }}</p>
-            {% if track.preview_url %}
-            <audio controls>
-                <source src="{{ track.preview_url }}" type="audio/mpeg">
-                Your browser does not support the audio element.
-            </audio>
-            {% else %}
-            <p>No preview available</p>
-            {% endif %}
-        </div>
-        {% endfor %}
+    <div id="tracks">
+        {% if tracks %}
+            {% for track in tracks %}
+                <div class="track">
+                    <h2>{{ track.name }}</h2>
+                    <p>Artist: {{ track.artist }}</p>
+                    <p>Album: {{ track.album }}</p>
+                    <p>Release Date: {{ track.release_date }}</p>
+                    {% if track.preview_url %}
+                        <audio controls>
+                            <source src="{{ track.preview_url }}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Error fetching top songs: No tracks available or an error occurred.</p>
+        {% endif %}
     </div>
 </body>
 </html>

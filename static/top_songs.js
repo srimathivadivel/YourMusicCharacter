@@ -34,3 +34,12 @@ document.addEventListener('DOMContentLoaded', () => {
             tracksDiv.innerHTML = `<p class="text-red-500">Error fetching top songs: ${error.message}</p>`;
         });
 });
+
+fetch('/top-songs')
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);  
+    })
+    .catch(error => {
+        console.error('Error fetching top songs:', error);
+    });
