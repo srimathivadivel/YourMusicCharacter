@@ -3,29 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <title>Your Top 5 Songs</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='top_songs.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/top_songs.css') }}">
 </head>
 <body>
     <h1>Your Top 5 Songs</h1>
     <div id="tracks">
-        {% if tracks %}
+        {% if error %}
+            <p>{{ error }}</p>
+        {% elif tracks %}
             {% for track in tracks %}
-                <div class="track">
-                    <h2>{{ track.name }}</h2>
-                    <p>Artist: {{ track.artist }}</p>
-                    <p>Album: {{ track.album }}</p>
-                    <p>Release Date: {{ track.release_date }}</p>
-                    {% if track.preview_url %}
-                        <audio controls>
-                            <source src="{{ track.preview_url }}" type="audio/mpeg">
-                            Your browser does not support the audio element.
-                        </audio>
-                    {% endif %}
+                <div class="song-card">
+                    <div class="track-info">
+                        <h2>{{ track.name }}</h2>
+                        <p>{{ track.artist }}</p>
+                    </div>
+                    <div class="track-preview">
+                        {% if track.preview_url %}
+                            <audio controls>
+                                <source src="{{ track.preview_url }}" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        {% else %}
+                            <p>No preview available</p>
+                        {% endif %}
+                    </div>
                 </div>
             {% endfor %}
         {% else %}
-            <p>Error fetching top songs: No tracks available or an error occurred.</p>
+            <p>No tracks found.</p>
         {% endif %}
     </div>
+    <script src="{{ url_for('static', filename='js/top_songs.js') }}"></script>
 </body>
 </html>

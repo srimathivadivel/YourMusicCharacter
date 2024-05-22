@@ -34,7 +34,11 @@ def index():
 def callback():
     session.clear()
     code = request.args.get('code')
-    token_info = sp_oauth.get_access_token(code)
+    try:
+        token_info = sp_oauth.get_access_token(code)
+    except Exception as e:
+        logging.error(f"Error during callback: {str(e)}")
+        return jsonify(error=f"Error during callback: {str(e)}"), 500
     session['token_info'] = token_info
     return redirect(url_for('top_songs'))
 
@@ -56,8 +60,6 @@ def top_songs():
     tracks = [{
         'name': track['name'],
         'artist': track['artists'][0]['name'],
-        'album': track['album']['name'],
-        'release_date': track['album']['release_date'],
         'preview_url': track['preview_url']
     } for track in top_songs_data['items']]
 
