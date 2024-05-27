@@ -12,7 +12,7 @@
             <p>{{ error }}</p>
         {% elif tracks %}
             {% for track in tracks %}
-                <div class="song-card">
+                <a href="{{ url_for('character', track_id=track.id) }}" class="song-card">
                     <div class="track-info">
                         <h2>{{ track.name }}</h2>
                         <p>{{ track.artist }}</p>
@@ -27,7 +27,7 @@
                             <p>No preview available</p>
                         {% endif %}
                     </div>
-                </div>
+                </a>
             {% endfor %}
         {% else %}
             <p>No tracks found.</p>

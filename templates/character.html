@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Character for Song</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/top_songs.css') }}">
+</head>
+<body>
+    <h1>your character: </h1>
+    <p>Character for track: {{ track_name }}</p>
+    <p>{{ character_name }}</p>
+    {% if character_image_url %}
+        <img src="{{ character_image_url }}" alt="{{ character_name }}">
+    {% endif %}
+</body>
+</html>

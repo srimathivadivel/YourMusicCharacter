@@ -5,13 +5,14 @@ from flask_session import Session
 from spotipy.oauth2 import SpotifyOAuth
 import spotipy
 import logging
+import sqlite3
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
 
-# set your client ID, client secret, and redirect URI
+# Set your client ID, client secret, and redirect URI
 SPOTIPY_CLIENT_ID = '9aea5dd3de9944b79791422c76a54cea'
 SPOTIPY_CLIENT_SECRET = 'dc658f04cde94635a1ab70675916921e'
 SPOTIPY_REDIRECT_URI = 'http://127.0.0.1:5000/callback'
@@ -24,6 +25,28 @@ sp_oauth = SpotifyOAuth(
 )
 
 logging.basicConfig(level=logging.DEBUG)
+
+def create_connection():
+    conn = sqlite3.connect('characters.db')
+    return conn
+
+def get_character_by_genre(genre):
+    conn = create_connection()
+    cursor = conn.cursor()
+
+    cursor.execute('''
+    SELECT name, image_url FROM characters WHERE genre = ? ORDER BY RANDOM() LIMIT 1
+    ''', (genre,))
+    
+    character = cursor.fetchone()
+    conn.close()
+    return character
+
+def get_genre_for_artist(artist_id, sp):
+    artist = sp.artist(artist_id)
+    if 'genres' in artist and len(artist['genres']) > 0:
+        return artist['genres'][0]  # Take the first genre
+    return None
 
 @app.route('/')
 def index():
@@ -53,14 +76,41 @@ def top_songs():
         logging.error(f"Error fetching top songs: {str(e)}")
         return jsonify(error=f"Error fetching top songs: {str(e)}"), 500
 
-    tracks = [{
-        'name': track['name'],
-        'artist': track['artists'][0]['name'],
-        'album_cover': track['album']['images'][0]['url'] if track['album']['images'] else None,
-        'preview_url': track['preview_url']
-    } for track in top_songs_data['items']]
+    tracks = []
+    for track in top_songs_data['items']:
+        genre = get_genre_for_artist(track['artists'][0]['id'], sp)
+        tracks.append({
+            'id': track['id'],
+            'name': track['name'],
+            'artist': track['artists'][0]['name'],
+            'genre': genre,
+            'preview_url': track['preview_url']
+        })
 
     return render_template('top_songs.html', tracks=tracks)
+
+@app.route('/character/<track_id>')
+def character(track_id):
+    token_info = get_token()
+    if not token_info:
+        return redirect('/')
+    
+    sp = spotipy.Spotify(auth=token_info['access_token'])
+    
+    try:
+        track = sp.track(track_id)
+        genre = get_genre_for_artist(track['artists'][0]['id'], sp)
+        character = get_character_by_genre(genre)
+        if character:
+            character_name, character_image_url = character
+        else:
+            character_name = "No character found"
+            character_image_url = ""
+    except spotipy.exceptions.SpotifyException as e:
+        logging.error(f"Error fetching character: {str(e)}")
+        return jsonify(error=f"Error fetching character: {str(e)}"), 500
+
+    return render_template('character.html', track_name=track['name'], character_name=character_name, character_image_url=character_image_url)
 
 def get_token():
     token_info = session.get('token_info', None)
