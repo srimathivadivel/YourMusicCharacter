@@ -50,6 +50,7 @@ def get_genre_for_artist(artist_id, sp):
 
 @app.route('/')
 def index():
+    session.clear()
     auth_url = sp_oauth.get_authorize_url()
     return redirect(auth_url)
 

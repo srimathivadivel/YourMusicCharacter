@@ -6,11 +6,10 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/top_songs.css') }}">
 </head>
 <body>
-    <h1>your character: </h1>
-    <p>Character for track: {{ track_name }}</p>
-    <p>{{ character_name }}</p>
-    {% if character_image_url %}
+    <h1>Character for {{ track_name }}</h1>
+    <div class="character-card">
+        <h2>{{ character_name }}</h2>
         <img src="{{ character_image_url }}" alt="{{ character_name }}">
-    {% endif %}
+    </div>
 </body>
 </html>
