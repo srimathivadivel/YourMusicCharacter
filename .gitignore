@@ -1,0 +1,5 @@
+echo "
+# Ignore cache and session files
+.cache/
+flask_session/
+" > .gitignore
