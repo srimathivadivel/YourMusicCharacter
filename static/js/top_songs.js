@@ -46,14 +46,4 @@ document.addEventListener('DOMContentLoaded', () => {
             // Display the error message in the 'tracks' div
             tracksDiv.innerHTML = `<p class="text-red-500">Error fetching top songs: ${error.message}</p>`;
         });
- });
- 
- // This is another fetch request to the '/top-songs' endpoint, but this time it doesn't handle the DOM
- fetch('/top-songs')
-    .then(response => response.json())
-    .then(data => {
-        console.log(data);  // Log the fetched data to the console
-    })
-    .catch(error => {
-        console.error('Error fetching top songs:', error); // Log any errors to the console
-    });
+});
