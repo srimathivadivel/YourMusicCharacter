@@ -9,7 +9,8 @@
     <h1>Character for {{ track_name }}</h1>
     <div class="character-card">
         <h2>{{ character_name }}</h2>
-        <img src="{{ character_image_url }}" alt="{{ character_name }}">
+        <img src="{{ url_for('static', filename='characters/' + character_image_url) }}" alt="{{ character_name }}">
+        <p>Character Type: {{ character_type }}</p>
     </div>
 </body>
 </html>

@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Your Top 5 Songs</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/top_songs.css') }}">
-    <script defer src="{{ url_for('static', filename='js/top_songs.js') }}"></script>
 </head>
 <body>
     <h1>Your Top 5 Songs</h1>
@@ -13,7 +12,7 @@
             <p>{{ error }}</p>
         {% elif tracks %}
             {% for track in tracks %}
-                <a href="{{ url_for('character', track_id=track.id) }}" class="song-card">
+                <div class="song-card">
                     <div class="track-info">
                         <h2>{{ track.name }}</h2>
                         <p>{{ track.artist }}</p>
@@ -28,7 +27,10 @@
                             <p>No preview available</p>
                         {% endif %}
                     </div>
-                </a>
+                    <a href="{{ url_for('character', track_id=track.id) }}">
+                        <button>Discover Character</button>
+                    </a>
+                </div>
             {% endfor %}
         {% else %}
             <p>No tracks found.</p>
