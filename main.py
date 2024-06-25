@@ -7,16 +7,17 @@ import sqlite3
 import logging
 import time
 
-# Initialize Flask app and Session
+# initializes Flask app and Session
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 app.config['SESSION_TYPE'] = 'filesystem'
 session
 
-# Initialize SpotifyOAuth object with credentials and scope
+# initializes SpotifyOAuth object with credentials and scope
 SPOTIPY_CLIENT_ID = '9aea5dd3de9944b79791422c76a54cea'
 SPOTIPY_CLIENT_SECRET = 'dc658f04cde94635a1ab70675916921e'
 SPOTIPY_REDIRECT_URI = 'http://127.0.0.1:5000/callback'
+
 sp_oauth = SpotifyOAuth(
     client_id=SPOTIPY_CLIENT_ID,
     client_secret=SPOTIPY_CLIENT_SECRET,
@@ -26,7 +27,7 @@ sp_oauth = SpotifyOAuth(
 
 logging.basicConfig(level=logging.DEBUG)
 
-# Function to create a connection to the SQLite database
+# creates a connection to the SQLite database
 def create_connection():
     conn = sqlite3.connect('characters.db')
     return conn
@@ -170,11 +171,11 @@ def setup_database():
 
     # Add new sample data
     sample_data = [
-        ('Rock Rebel', 'characters/character1.png', 'Rocker'),
-        ('Pop Princess', 'characters/character2.png', 'Pop Star'),
-        ('Soul Sister', 'characters/character3.png', 'Soulful Singer'),
-        ('Hip Hop Hero', 'characters/character4.png', 'Hip Hop Artist'),
-        ('Folk Troubadour', 'characters/character5.png', 'Folk Musician')
+        ('Rock Rebel', 'character1.png', 'Rocker'),
+        ('Pop Princess', 'character2.png', 'Pop Star'),
+        ('Soul Sister', 'character3.png', 'Soulful Singer'),
+        ('Hip Hop Hero', 'character4.png', 'Hip Hop Artist'),
+        ('Folk Troubadour', 'character5.png', 'Folk Musician')
     ]
     c.executemany('''
     INSERT INTO characters (name, image_url, character_type) VALUES (?, ?, ?)
@@ -183,32 +184,29 @@ def setup_database():
     conn.commit()
     conn.close()
 
-# Call setup_database at the start of the application
+# calls setup_database at the start of the application
 setup_database()
 
-# Function to classify character based on genres
+# classifies character based on genres
 def classify_character(genres):
     scores = {character: 0 for character in CHARACTER_TYPES}
-    
+
     for genre in genres:
         logging.debug(f"Processing genre: {genre}")
         for character, related_genres in CHARACTER_TYPES.items():
-            logging.debug(f"Checking if genre '{genre.lower()}' is in character '{character}' genres")
             if any(g in genre.lower() for g in related_genres):
                 logging.debug(f"Matched genre '{genre}' with character '{character}'")
                 scores[character] += 1
-    
-    logging.debug(f"Scores: {scores}")
-    
+
     if all(score == 0 for score in scores.values()):
         logging.debug("No matching genres found. Returning 'Unknown Artist'.")
         return "Unknown Artist"  # Default type if no match is found
-    
+
     max_character = max(scores, key=scores.get)
     logging.debug(f"Classified character type: {max_character} with score {scores[max_character]}")
     return max_character
 
-# Function to retrieve a random character from the database based on the genre
+# retrieves a character from the database based on the genre
 def get_character_by_genre(genre):
     logging.debug(f"Retrieving character for genre: {genre}")
     character_type = classify_character([genre])
@@ -230,10 +228,10 @@ def get_character_by_genre(genre):
         logging.debug(f"No character found for type '{character_type}'. Returning default character.")
         return ("Mystery Musician", "default_character.png"), character_type
     
-    logging.debug(f"Retrieved character '{character[0]}' for type '{character_type}'")
+    logging.debug(f"Retrieved character '{character[0]}' with image URL '{character[1]}' for type '{character_type}'")
     return character, character_type
 
-# Function to retrieve the first genre of an artist
+# retrieves the first genre of an artist
 def get_genre_for_artist(artist_id, sp):
     artist = sp.artist(artist_id)
     if 'genres' in artist and len(artist['genres']) > 0:
@@ -299,23 +297,29 @@ def character(track_id):
     if not token_info:
         logging.error("No token info available, redirecting to home.")
         return redirect('/')
+
     sp = spotipy.Spotify(auth=token_info['access_token'])
+
     try:
         track = sp.track(track_id)
         genre = get_genre_for_artist(track['artists'][0]['id'], sp) or "Unknown Genre"
         (character_name, character_image_url), character_type = get_character_by_genre(genre)
+        image_path = url_for('static', filename='characters/' + character_image_url)
+        logging.debug(f"Track Name: {track['name']}, Character Name: {character_name}, Image URL: {character_image_url}, Character Type: {character_type}")
+        logging.debug(f"Image Path: {image_path}")
     except spotipy.exceptions.SpotifyException as e:
         logging.error(f"Error fetching character: {str(e)}")
-        return render_template('character.html',
-                               track_name="Unknown Track",
-                               character_name="Error",
-                               character_image_url="default_character.png",
+        return render_template('character.html', 
+                               track_name="Unknown Track", 
+                               character_name="Error", 
+                               character_image_url="error.png",
                                character_type="Error",
                                error=f"Error fetching character: {str(e)}")
-    return render_template('character.html',
-                           track_name=track['name'],
-                           character_name=character_name,
-                           character_image_url='characters/' + character_image_url,
+
+    return render_template('character.html', 
+                           track_name=track['name'], 
+                           character_name=character_name, 
+                           character_image_url=character_image_url,
                            character_type=character_type)
 
 def check_database():
@@ -327,10 +331,10 @@ def check_database():
         logging.debug(character)
     conn.close()
 
-# Call check_database at the start of the application to debug
+# calls check_database at the start of the application to debug
 check_database()
 
-# Helper function to get or refresh the access token
+# helper function to get or refresh the access token
 def get_token():
     token_info = session.get('token_info', None)
     if not token_info:
