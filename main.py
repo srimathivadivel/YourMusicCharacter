@@ -1,4 +1,4 @@
-from flask import Flask, redirect, request, session, url_for, render_template
+from flask import Flask, jsonify, redirect, request, session, url_for, render_template
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 import os
@@ -33,124 +33,8 @@ def create_connection():
     return conn
 
 # Define character types and their associated genres
-CHARACTER_TYPES = {
-  "Rocker": [
-    "rock", "metal", "punk", "grunge", "alternative rock", "hard rock",
-    "heavy metal", "classic rock", "garage rock", "punk rock",
-    "progressive rock", "blues rock", "glam rock", "psychedelic rock",
-    "indie rock", "arena rock", "stoner rock", "post-punk", "goth rock",
-    "doom metal", "black metal", "death metal", "nu metal", "thrash metal",
-    "speed metal", "sludge metal", "power metal", "symphonic metal", 
-    "folk metal", "viking metal", "hardcore punk", "emo", "ska punk",
-    "crust punk", "industrial rock", "math rock", "shoegaze", "noise rock",
-    "funk rock", "rap rock", "alt-metal", "art rock", "avant-garde metal",
-    "crossover thrash", "deathcore", "grindcore", "metalcore", "post-metal",
-    "space rock", "southern rock", "psychedelic metal", "gothic metal", 
-    "progressive metal", "technical death metal", "melodic death metal", 
-    "blackened death metal", "groove metal", "drone metal", "industrial metal",
-    "nu-gaze", "post-rock", "jangle pop", "krautrock", "britpop", 
-    "garage punk", "horror punk", "new wave of british heavy metal", 
-    "visual kei", "j-rock", "k-rock", "glam metal", "sleaze rock", 
-    "arena rock", "death-doom", "funeral doom", "blackened doom", 
-    "stoner doom", "post-black metal", "ambient black metal", 
-    "melodic black metal", "symphonic black metal", "technical metal", 
-    "djent", "cyber metal", "nu-core", "rapcore", "folk punk", 
-    "gypsy punk", "psychobilly", "horror punk", "deathrock", 
-    "coldwave", "darkwave", "minimal wave", "gothic rock", 
-    "ethereal wave", "neofolk", "apocalyptic folk", "martial industrial",
-    "dark ambient", "dark folk", "space metal"
-  ],
-  "Pop Star": [
-    "pop", "dance", "electronic", "synthpop", "electropop", "dance-pop",
-    "k-pop", "j-pop", "teen pop", "indie pop", "bubblegum pop",
-    "art pop", "hyperpop", "latin pop", "pop rock", "europop",
-    "futurepop", "pop rap", "pop punk", "disco", "house",
-    "trance", "techno", "ambient", "chillwave", "dream pop",
-    "new wave", "progressive pop", "tropical house", "deep house", 
-    "eurodance", "dancehall", "synthwave", "future bass", "vaporwave",
-    "electro house", "progressive house", "big room house", "trap",
-    "twerk", "moombahton", "future house", "bass house", "garage",
-    "dubstep", "drum and bass", "glitch hop", "jungle", "hardcore",
-    "breakbeat", "electroclash", "italo disco", "nu-disco", 
-    "chiptune", "bitpop", "j-pop", "idol pop", "city pop", 
-    "shibuya-kei", "enka", "visual kei", "anime pop", 
-    "bubblegum dance", "scandipop", "eurobeat", "italodance", 
-    "hands up", "hi-nrg", "commercial dance", "progressive trance",
-    "uplifting trance", "goa trance", "psytrance", "hard trance", 
-    "chillstep", "liquid funk", "neurofunk", "jump up", 
-    "jungle terror", "bassline", "speed garage", "uk garage", 
-    "future garage", "2-step", "grime", "dark pop", "electro swing",
-    "b-more", "future bounce", "deep pop", "tropical pop", "melodic house"
-  ],
-  "Soulful Singer": [
-    "r&b", "soul", "jazz", "blues", "neo-soul", "funk", "motown",
-    "smooth jazz", "contemporary r&b", "swing", "bebop", "vocal jazz",
-    "gospel", "doo-wop", "blue-eyed soul", "acid jazz", "fusion",
-    "jazz funk", "blues rock", "ragtime", "new jack swing", "quiet storm",
-    "philly soul", "northern soul", "southern soul", "psychedelic soul",
-    "urban contemporary", "boogie", "afrobeat", "latin jazz", "soul jazz",
-    "gypsy jazz", "bossa nova", "cool jazz", "free jazz", "post-bop",
-    "hard bop", "soul blues", "smooth soul", "progressive soul", "nu jazz",
-    "avant-garde jazz", "contemporary jazz", "traditional jazz", "electro swing",
-    "jazz fusion", "ethio-jazz", "jazz rap", "mambo", "salsa", "samba",
-    "tango", "cha-cha-cha", "reggaeton", "bachata", "merengue", 
-    "flamenco", "timba", "son cubano", "bolero", "boogaloo", 
-    "bossa nova", "tropicalia", "mariachi", "ranchera", "norteño", 
-    "tejano", "cumbia", "vallenato", "soca", "calypso", "ska", 
-    "rocksteady", "reggae", "dancehall", "lovers rock", "dub", 
-    "reggae fusion", "roots reggae", "mento", "zydeco", "cajun", 
-    "swamp pop", "gospel blues", "spirituals", "hymns", "bluegrass gospel", 
-    "quartet gospel", "sacred steel", "christian soul", "urban gospel",
-    "country gospel", "southern gospel", "black gospel", "contemporary christian"
-  ],
-  "Hip Hop Artist": [
-    "hip hop", "rap", "trap", "grime", "boom bap", "gangsta rap",
-    "east coast hip hop", "west coast hip hop", "southern hip hop",
-    "conscious hip hop", "crunk", "drill", "mumble rap", "old school hip hop",
-    "underground hip hop", "trap soul", "alternative hip hop", "reggaeton",
-    "hyphy", "cloud rap", "trap metal", "emo rap", "latin trap", "afro trap",
-    "chopped and screwed", "dirty south", "g-funk", "hardcore hip hop", 
-    "jazz rap", "miami bass", "nerdcore", "turntablism", "hyphy", "snap music",
-    "phonk", "bounce", "drill", "grime", "trap rap", "trap soul", "industrial hip hop",
-    "conscious hip hop", "east coast rap", "west coast rap", "southern rap", "nuyorican rap",
-    "reggae fusion", "reggae rap", "dancehall", "ragga", "bashment",
-    "baile funk", "funk carioca", "favela funk", "bhangra", "desi hip hop",
-    "k-hip hop", "j-hip hop", "euro-rap", "francophone rap", "british hip hop",
-    "aussie hip hop", "drill", "uk drill", "chicago drill", "brooklyn drill",
-    "trap drill", "bounce music", "crunkcore", "crunk", "memphis rap",
-    "new jack swing", "ragga hip hop", "trip hop", "abstract hip hop",
-    "neo-soul", "conscious rap", "latin hip hop", "spanish hip hop", "turkish hip hop",
-    "german hip hop", "french hip hop", "italian hip hop", "portuguese hip hop",
-    "afrobeats", "afroswing", "britfunk", "dembow", "trapeton", "trance hop",
-    "raggatek", "rap rock", "rap metal", "rapcore", "horrorcore", "juggalo", 
-    "queercore", "psychedelic hip hop", "rap opera", "rap musical",
-    "kentucky hip hop", "memphis hip hop", "brooklyn drill", "florida drill", "canadian hip hop"
-  ],
-  "Folk Musician": [
-    "folk", "country", "acoustic", "indie", "bluegrass", "americana",
-    "alt-country", "singer-songwriter", "traditional folk", "celtic",
-    "appalachian", "roots rock", "folk rock", "new acoustic", "folk pop",
-    "indie folk", "country rock", "outlaw country", "cowboy", "gospel",
-    "folk punk", "neofolk", "cajun", "zydeco", "contemporary folk",
-    "british folk", "irish folk", "scottish folk", "canadian folk", 
-    "protest folk", "traditional country", "western swing", "cowpunk", 
-    "folk metal", "americana", "bluegrass gospel", "new country",
-    "celtic rock", "celtic punk", "progressive folk", "world folk", 
-    "freak folk", "psych folk", "urban folk", "country folk", 
-    "folk blues", "folk jazz", "folk baroque", "ethereal folk",
-    "electric folk", "folk revival", "appalachian folk", "contemporary folk",
-    "folk rap", "folk pop", "celtic folk", "bluegrass", "newgrass", 
-    "mountain music", "bluegrass gospel", "progressive bluegrass", 
-    "roots revival", "folk dance", "balfolk", "folk rock", "folk punk", 
-    "indie folk", "nu-folk", "anti-folk", "progressive folk", "freak folk", 
-    "psych folk", "urban folk", "traditional folk", "neotraditional folk",
-    "acoustic folk", "chamber folk", "contemporary folk", "electro-folk",
-    "folk-pop", "folk-metal", "folk-punk", "folk-rock", "folk-soul",
-    "folk-tronica", "psychedelic folk", "world folk", "folk rap",
-    "folk jazz", "folk blues", "folk funk", "folk gospel", "indie folk",
-    "new folk", "neo-folk", "post-folk", "proto-folk"
-  ]
-}
+genre_file = open('genre_character_mapping.json')
+CHARACTER_TYPES = json.load(genre_file)
 
 # Function to set up the database
 def setup_database():
@@ -190,6 +74,7 @@ setup_database()
 # classifies character based on genres
 def classify_character(genres):
     scores = {character: 0 for character in CHARACTER_TYPES}
+    print("asdf" + str(scores))
 
     for genre in genres:
         logging.debug(f"Processing genre: {genre}")
@@ -246,6 +131,10 @@ def index():
 
 @app.route('/login')
 def login():
+    # Deleting cache file if it exists to have most current data for current user
+    cache_path = '.cache'
+    if os.path.exists(cache_path):
+        os.remove(cache_path)
     logging.debug("Redirecting to Spotify authorization URL.")
     auth_url = sp_oauth.get_authorize_url()
     logging.debug(f"Authorization URL: {auth_url}")

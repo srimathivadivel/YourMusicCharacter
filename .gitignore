@@ -1,5 +1,9 @@
 echo "
 # Ignore cache and session files
 .cache/
+.cache
 flask_session/
+
+.env.local
+venv/
 " > .gitignore
