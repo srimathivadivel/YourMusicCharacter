@@ -6,6 +6,7 @@ import json
 import sqlite3
 import logging
 import time
+from dotenv import load_dotenv
 
 # initializes Flask app and Session
 app = Flask(__name__)
@@ -14,9 +15,10 @@ app.config['SESSION_TYPE'] = 'filesystem'
 session
 
 # initializes SpotifyOAuth object with credentials and scope
-SPOTIPY_CLIENT_ID = '9aea5dd3de9944b79791422c76a54cea'
-SPOTIPY_CLIENT_SECRET = 'dc658f04cde94635a1ab70675916921e'
-SPOTIPY_REDIRECT_URI = 'http://127.0.0.1:5000/callback'
+load_dotenv()
+SPOTIPY_CLIENT_ID = os.getenv('SPOTIPY_CLIENT_ID')
+SPOTIPY_CLIENT_SECRET = os.getenv('SPOTIPY_CLIENT_SECRET')
+SPOTIPY_REDIRECT_URI = os.getenv('SPOTIPY_REDIRECT_URI')
 
 sp_oauth = SpotifyOAuth(
     client_id=SPOTIPY_CLIENT_ID,
@@ -74,7 +76,6 @@ setup_database()
 # classifies character based on genres
 def classify_character(genres):
     scores = {character: 0 for character in CHARACTER_TYPES}
-    print("asdf" + str(scores))
 
     for genre in genres:
         logging.debug(f"Processing genre: {genre}")
