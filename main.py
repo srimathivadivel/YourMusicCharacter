@@ -169,8 +169,11 @@ def top_songs():
         logging.error(f"Error fetching top songs: {str(e)}")
         return render_template('top_songs.html', error=f"Error fetching top songs: {str(e)}")
     tracks = []
+    genres = []
     for track in top_songs_data['items']:
         genre = get_genre_for_artist(track['artists'][0]['id'], sp)
+        if genre:
+            genres.append(genre)
         tracks.append({
             'id': track['id'],
             'name': track['name'],
@@ -179,7 +182,29 @@ def top_songs():
             'preview_url': track['preview_url']
         })
     logging.debug(f"Tracks to be rendered: {tracks}")
+    session['genres'] = genres  # Store genres in session
     return render_template('top_songs.html', tracks=tracks)
+
+@app.route('/discover-character')
+def discover_character():
+    genres = session.get('genres', [])
+    if not genres:
+        logging.error("No genres found in session.")
+        return redirect('/')
+    
+    logging.debug(f"Processing genres for character classification: {genres}")
+    character_type = classify_character(genres)
+    (character_name, character_image_url), character_type = get_character_by_genre(character_type)
+    image_path = url_for('static', filename='characters/' + character_image_url)
+    
+    logging.debug(f"Character Name: {character_name}, Image URL: {character_image_url}, Character Type: {character_type}")
+    logging.debug(f"Image Path: {image_path}")
+    
+    return render_template('character.html', 
+                           track_name="Your Top 5 Songs", 
+                           character_name=character_name, 
+                           character_image_url=character_image_url,
+                           character_type=character_type)
 
 @app.route('/character/<track_id>')
 def character(track_id):

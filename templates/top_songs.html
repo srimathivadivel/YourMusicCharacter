@@ -27,11 +27,14 @@
                             <p>No preview available</p>
                         {% endif %}
                     </div>
-                    <a href="{{ url_for('character', track_id=track.id) }}">
-                        <button>Discover Character</button>
-                    </a>
                 </div>
             {% endfor %}
+        </div>
+        <div class="discover-button">
+            <a href="{{ url_for('discover_character') }}">
+                <button>Discover Character</button>
+            </a>
+        </div>
         {% else %}
             <p>No tracks found.</p>
         {% endif %}
