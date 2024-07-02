@@ -5,4 +5,5 @@ echo "
 flask_session/
 .env
 venv/
+.DS_store
 " > .gitignore
