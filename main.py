@@ -6,7 +6,6 @@ import json
 import sqlite3
 import logging
 import time
-from dotenv import load_dotenv
 
 # initializes Flask app and Session
 app = Flask(__name__)
@@ -15,10 +14,9 @@ app.config['SESSION_TYPE'] = 'filesystem'
 session
 
 # initializes SpotifyOAuth object with credentials and scope
-load_dotenv()
-SPOTIPY_CLIENT_ID = os.getenv('SPOTIPY_CLIENT_ID')
-SPOTIPY_CLIENT_SECRET = os.getenv('SPOTIPY_CLIENT_SECRET')
-SPOTIPY_REDIRECT_URI = os.getenv('SPOTIPY_REDIRECT_URI')
+SPOTIPY_CLIENT_ID = 'dca7d8a6114c4c76ba8022ff679fd79a'
+SPOTIPY_CLIENT_SECRET = '5b9fdf9f6c2847adbe45d1052edc7ca2'
+SPOTIPY_REDIRECT_URI = 'http://127.0.0.1:5000/callback'
 
 sp_oauth = SpotifyOAuth(
     client_id=SPOTIPY_CLIENT_ID,
