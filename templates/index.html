@@ -2,17 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>MusicRec - Discover Your Character</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/top_songs.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your React App</title>
+    <!-- External Font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap">
 </head>
 <body>
-    <h1>Welcome to Your Music Character!</h1>
-    
-    <p>Click the button below to log into Spotify and discover your character based on your top 5 songs!</p>
-    
-    <a href="/login">
-        <button>Log in with Spotify</button>
-    </a>
-
+    <div id="root"></div>
+    <!-- Include the transpiled JavaScript bundle -->
+    <script src="{{ url_for('static', filename='js/HomePage.js') }}"></script>
 </body>
 </html>
