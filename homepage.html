@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(174, 248, 174, 1), rgba(255, 255, 255, 1));
+            opacity: 1;
+            z-index: 0;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        .bg-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('./static/src/assets/spotifybg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.2;
+            z-index: 1;
+        }
+        .content {
+            width: 600px;
+            height: 600px;
+            right: 7%;
+            top: 50%;
+            transform: translateY(-50%);
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            background-color: rgba(30, 215, 96, 0.5);
+            box-shadow: 5px 6px 4px 2px rgba(0, 0, 0, 0.80);
+            border-radius: 50%;
+            border: 3px solid black;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .character-container {
+            position: relative;
+            width: 189px;
+            height: 188px;
+        }
+        .monster-cartoon {
+            width: 320px;
+            height: 343px;
+            position: absolute;
+            left: -195px;
+            top: -38px;
+            filter: brightness(20%);
+        }
+        .monster-cartoon:nth-child(2) {
+            width: 320px;
+            height: 343px;
+            position: absolute;
+            left: 60px;
+            top: -38px;
+            filter: brightness(20%);
+        }
+        .monster-cartoon:nth-child(3) {
+            width: 414px;
+            height: 450px;
+            position: absolute;
+            left: -116px;
+            top: -131px;
+            filter: brightness(100%);
+        }
+        .logo-container {
+            left: 27px;
+            top: 14px;
+            position: absolute;
+            display: inline-flex;
+            align-items: flex-start;
+            gap: 1px;
+            z-index: 3;
+        }
+        .logo-text {
+            color: black;
+            font-size: 21px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            word-wrap: break-word;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+        }
+        .spotify-logo {
+            width: 27px;
+            height: 27px;
+        }
+        .title-welcome {
+            left: 250px;
+            top: 210px;
+            position: absolute;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3;
+            color: black;
+            font-size: 114px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            word-wrap: break-word;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6); 
+        }
+        .title-test {
+            left: 288px;
+            top: 348px;
+            position: absolute;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3;
+            color: black;
+            font-size: 38px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 720;
+            word-wrap: break-word;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6); 
+        }
+        .description {
+            width: 600px;
+            height: 375px;
+            left: 260px;
+            top: 318px;
+            position: absolute;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3;
+            color: black;
+            font-size: 28px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            word-wrap: break-word;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+            line-height: 1.4;
+        }
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 95px;
+            background: rgba(0, 0, 0, 0.20);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: black;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+        }
+        .button-container {
+            width: 375px;
+            height: 57px;
+            left: 98px;
+            top: 277px;
+            position: absolute;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3;
+            cursor: pointer; /* Add cursor pointer */
+        }
+        .button-background {
+            width: 525px;
+            height: 75px;
+            left: 188px;
+            top: 353px;
+            position: absolute;
+            background: black;
+            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+            border-radius: 60px;
+            border: 2px solid black;
+        }
+        .button-text {
+            width: 450px;
+            height: 18px;
+            left: 229px;
+            top: 379px;
+            position: absolute;
+            text-align: center;
+            z-index: 4;
+            color: white;
+            font-size: 27px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="overlay"></div>
+        <div class="bg-image"></div>
+        <div class="content">
+            <div class="character-container">
+                <img class="monster-cartoon" src="./static/src/assets/monstercartoon.png" alt="Monster Cartoon">
+                <img class="monster-cartoon" src="./static/src/assets/monstercartoon.png" alt="Monster Cartoon">
+                <img class="monster-cartoon" src="./static/src/assets/monstercartoon.png" alt="Monster Cartoon">
+            </div>
+        </div>
+        <div class="logo-container">
+            <div class="logo-text">YourMusicCharacter</div>
+            <img class="spotify-logo" src="./static/src/assets/Spotifylogo.png" alt="Spotify Logo">
+        </div>
+        <div class="button-container" onclick="window.location.href='/login'">
+            <div class="button-background"></div>
+            <div class="button-text">
+                <span style="color: white;">Link Your </span>
+                <span style="color: #1ED760;">Spotify</span>
+                <span style="color: white;"> Account!</span>
+            </div>
+        </div>
+        <div class="title-welcome">Welcome!</div>
+        <div class="title-test">To A Spotify Personality Test</div>
+        <div class="description">
+            Sign in to Your Spotify Account Then Get <br>
+            Personality-Based Cartoon Characters From <br>
+            Your Top 5 Most Listened to Spotify Songs!
+        </div>
+        <div class="footer">
+            A Tech Cadet Project
+        </div>
+    </div>
+</body>
+</html>

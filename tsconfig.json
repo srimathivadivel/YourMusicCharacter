@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["dom", "es2017"],
+    "jsx": "react",
+    "module": "commonjs", // Change module to 'commonjs' as recommended by TypeScript when using 'resolveJsonModule'
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
+    "outDir": "./build",
+    "baseUrl": "static/src",
+    "paths": {
+      "*": ["*", "static/src/*"]
+    }
+  },
+  "include": ["static/src/**/*", "static/src/App.js"],
+  "exclude": ["node_modules"]
+}
